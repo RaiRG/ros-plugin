@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(railina)
-
+project(camera_async)
 # Check for c++11 / c++0x support
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -12,8 +11,6 @@ elseif(COMPILER_SUPPORTS_CXX0X)
 else()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
-
-# Load catkin and all dependencies required for this package
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   gazebo_ros
@@ -31,12 +28,5 @@ catkin_package(
     gazebo_ros
 )
 
-#add_library(railina src/plugins/system_gui.cpp)
-#target_link_libraries(railina ${GAZEBO_LIBRARIES})
-
-#add_library(railina src/my_plugin/camera_async/src/gazebo_ros_multicamera.cpp)
-#target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
-
-
-install(DIRECTORY config launch urdf
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+add_library(${PROJECT_NAME} src/gazebo_ros_multicamera.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
