@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/railina/catkin_ws/src/railina/cmake-build-debug/devel/setup.sh
