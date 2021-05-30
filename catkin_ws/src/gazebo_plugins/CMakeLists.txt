@@ -89,7 +89,8 @@ catkin_package(
   gazebo_ros_camera_utils 
   gazebo_ros_camera 
   gazebo_ros_triggered_camera
-  gazebo_ros_multicamera 
+  gazebo_ros_multicamera
+        camera_async
   gazebo_ros_triggered_multicamera
   gazebo_ros_depth_camera 
   gazebo_ros_openni_kinect 
@@ -192,6 +193,10 @@ endif()
 add_library(gazebo_ros_multicamera src/gazebo_ros_multicamera.cpp)
 add_dependencies(gazebo_ros_multicamera ${PROJECT_NAME}_gencfg)
 target_link_libraries(gazebo_ros_multicamera gazebo_ros_camera_utils MultiCameraPlugin ${catkin_LIBRARIES})
+
+add_library(camera_async src/camera_async.cpp)
+add_dependencies(camera_async ${PROJECT_NAME}_gencfg)
+target_link_libraries(camera_async gazebo_ros_camera_utils MultiCameraPlugin ${catkin_LIBRARIES})
 
 add_library(gazebo_ros_triggered_multicamera src/gazebo_ros_triggered_multicamera.cpp)
 add_dependencies(gazebo_ros_triggered_multicamera ${PROJECT_NAME}_gencfg)
@@ -312,6 +317,7 @@ install(TARGETS
   gazebo_ros_camera
   gazebo_ros_triggered_camera
   gazebo_ros_multicamera
+        camera_async
   MultiCameraPlugin
   gazebo_ros_triggered_multicamera
   gazebo_ros_depth_camera

@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/railina/catkin_ws/src/gazebo_plugins/cmake-build-debug/devel/setup.sh

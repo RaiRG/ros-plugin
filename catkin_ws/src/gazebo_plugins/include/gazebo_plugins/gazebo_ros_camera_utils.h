@@ -52,6 +52,7 @@
 
 namespace gazebo
 {
+    class CameraAsync;
   class GazeboRosMultiCamera;
   class GazeboRosTriggeredMultiCamera;
   class GazeboRosCameraUtils
@@ -223,6 +224,7 @@ namespace gazebo
     /// \brief True if camera util is initialized
     protected: bool initialized_;
 
+    friend class CameraAsync;
     friend class GazeboRosMultiCamera;
     friend class GazeboRosTriggeredMultiCamera;
   };
