@@ -17,6 +17,7 @@ endif()
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   gazebo_ros
+  image_transport
 )
 
 # Depend on system install of Gazebo
@@ -30,6 +31,9 @@ catkin_package(
     roscpp
     gazebo_ros
 )
+
+add_executable(sync_node src/sync_node.cpp)
+target_link_libraries(sync_node ${catkin_LIBRARIES})
 
 #add_library(railina src/plugins/system_gui.cpp)
 #target_link_libraries(railina ${GAZEBO_LIBRARIES})

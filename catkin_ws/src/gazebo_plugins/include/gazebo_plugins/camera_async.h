@@ -23,16 +23,11 @@ namespace gazebo
 
         std::vector<GazeboRosCameraUtils*> utils;
 
-    protected: void OnNewFrame(const unsigned char *_image,
-                               GazeboRosCameraUtils* util);
         /// \brief Update the controller
-        /// FIXME: switch to function vectors
-    protected: virtual void OnNewFrameLeft(const unsigned char *_image,
-                                           unsigned int _width, unsigned int _height,
-                                           unsigned int _depth, const std::string &_format);
-    protected: virtual void OnNewFrameRight(const unsigned char *_image,
-                                            unsigned int _width, unsigned int _height,
-                                            unsigned int _depth, const std::string &_format);
+    protected: virtual void OnNewFrame(const unsigned char *_image,
+                                       size_t _camNumber,
+                                       unsigned int _width, unsigned int _height,
+                                       unsigned int _depth, const std::string &_format);
 
         /// Bookkeeping flags that will be passed into the underlying
         /// GazeboRosCameraUtils objects to let them share state about the parent
@@ -42,4 +37,3 @@ namespace gazebo
     private: boost::shared_ptr<bool> was_active_;
     };
 }
-

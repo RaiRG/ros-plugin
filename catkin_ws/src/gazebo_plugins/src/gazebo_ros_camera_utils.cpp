@@ -610,13 +610,13 @@ void GazeboRosCameraUtils::PutCameraData(const unsigned char *_src,
 
 void GazeboRosCameraUtils::PutCameraData(const unsigned char *_src)
 {
-  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0)
-    return;
-
+  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0) {
+      return;
+  }
   /// don't bother if there are no subscribers
   if ((*this->image_connect_count_) > 0)
   {
-    boost::mutex::scoped_lock lock(this->lock_);
+      boost::mutex::scoped_lock lock(this->lock_);
 
     // copy data into image
     this->image_msg_.header.frame_id = this->frame_name_;
@@ -626,8 +626,9 @@ void GazeboRosCameraUtils::PutCameraData(const unsigned char *_src)
     // copy from src to image_msg_
     fillImage(this->image_msg_, this->type_, this->height_, this->width_,
         this->skip_*this->width_, reinterpret_cast<const void*>(_src));
+     ROS_ERROR("image_pub_.publish");
 
-    // publish to ros
+      // publish to ros
     this->image_pub_.publish(this->image_msg_);
   }
 }
@@ -636,8 +637,10 @@ void GazeboRosCameraUtils::PutCameraData(const unsigned char *_src)
 // Put camera_ data to the interface
 void GazeboRosCameraUtils::PublishCameraInfo(common::Time &last_update_time)
 {
-  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0)
-    return;
+  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0) {
+      ROS_ERROR("Error in condition in  GazeboRosCameraUtils::PublishCameraInfo(common::Time &last_update_time)");
+      return;
+  }
 
   this->sensor_update_time_ = last_update_time;
   this->PublishCameraInfo();
@@ -645,8 +648,9 @@ void GazeboRosCameraUtils::PublishCameraInfo(common::Time &last_update_time)
 
 void GazeboRosCameraUtils::PublishCameraInfo()
 {
-  if (!this->initialized_ || this->height_ <=0 || this->width_ <=0)
-    return;
+   if (!this->initialized_ || this->height_ <=0 || this->width_ <=0) {
+       return;
+   }
 
   if (this->camera_info_pub_.getNumSubscribers() > 0)
   {
@@ -657,16 +661,16 @@ void GazeboRosCameraUtils::PublishCameraInfo()
       this->last_info_update_time_ = this->sensor_update_time_;
     }
   }
+
 }
 
 void GazeboRosCameraUtils::PublishCameraInfo(
   ros::Publisher camera_info_publisher)
 {
   sensor_msgs::CameraInfo camera_info_msg = camera_info_manager_->getCameraInfo();
-
   camera_info_msg.header.stamp.sec = this->sensor_update_time_.sec;
   camera_info_msg.header.stamp.nsec = this->sensor_update_time_.nsec;
-
+    ROS_ERROR("camera_info_publisher.publish");
   camera_info_publisher.publish(camera_info_msg);
 }
 

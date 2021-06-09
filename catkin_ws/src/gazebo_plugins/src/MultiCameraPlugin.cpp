@@ -30,90 +30,69 @@ MultiCameraPlugin::MultiCameraPlugin() : SensorPlugin()
 /////////////////////////////////////////////////
 MultiCameraPlugin::~MultiCameraPlugin()
 {
-  this->parentSensor.reset();
-  this->camera.clear();
+    this->parentSensor.reset();
+    this->camera.clear();
 }
 
 /////////////////////////////////////////////////
 void MultiCameraPlugin::Load(sensors::SensorPtr _sensor,
-  sdf::ElementPtr /*_sdf*/)
+                             sdf::ElementPtr /*_sdf*/)
 {
-  if (!_sensor)
-    gzerr << "Invalid sensor pointer.\n";
+    if (!_sensor)
+        gzerr << "Invalid sensor pointer.\n";
 
-  GAZEBO_SENSORS_USING_DYNAMIC_POINTER_CAST;
-  this->parentSensor =
-    dynamic_pointer_cast<sensors::MultiCameraSensor>(_sensor);
+    GAZEBO_SENSORS_USING_DYNAMIC_POINTER_CAST;
+    this->parentSensor =
+            dynamic_pointer_cast<sensors::MultiCameraSensor>(_sensor);
 
-  if (!this->parentSensor)
-  {
-    gzerr << "MultiCameraPlugin requires a CameraSensor.\n";
-    if (dynamic_pointer_cast<sensors::DepthCameraSensor>(_sensor))
-      gzmsg << "It is a depth camera sensor\n";
-    if (dynamic_pointer_cast<sensors::CameraSensor>(_sensor))
-      gzmsg << "It is a camera sensor\n";
-  }
-
-  if (!this->parentSensor)
-  {
-    gzerr << "MultiCameraPlugin not attached to a camera sensor\n";
-    return;
-  }
-
-  for (unsigned int i = 0; i < this->parentSensor->CameraCount(); ++i)
-  {
-    this->camera.push_back(this->parentSensor->Camera(i));
-
-    // save camera attributes
-    this->width.push_back(this->camera[i]->ImageWidth());
-    this->height.push_back(this->camera[i]->ImageHeight());
-    this->depth.push_back(this->camera[i]->ImageDepth());
-    this->format.push_back(this->camera[i]->ImageFormat());
-
-    std::string cameraName = this->parentSensor->Camera(i)->Name();
-    // gzdbg << "camera(" << i << ") name [" << cameraName << "]\n";
-
-    // FIXME: hardcoded 2 camera support only
-    // RA: попробовать if (cameraName.find("camera" + i) != std::string::npos)
-    if (cameraName.find("left") != std::string::npos)
+    if (!this->parentSensor)
     {
-      this->newFrameConnection.push_back(this->camera[i]->ConnectNewImageFrame(
-        boost::bind(&MultiCameraPlugin::OnNewFrameLeft,
-        this, _1, _2, _3, _4, _5)));
+        gzerr << "MultiCameraPlugin requires a CameraSensor.\n";
+        if (dynamic_pointer_cast<sensors::DepthCameraSensor>(_sensor))
+            gzmsg << "It is a depth camera sensor\n";
+        if (dynamic_pointer_cast<sensors::CameraSensor>(_sensor))
+            gzmsg << "It is a camera sensor\n";
     }
-    else if (cameraName.find("right") != std::string::npos)
-    {
-      this->newFrameConnection.push_back(this->camera[i]->ConnectNewImageFrame(
-        boost::bind(&MultiCameraPlugin::OnNewFrameRight,
-        this, _1, _2, _3, _4, _5)));
-    }
-  }
 
-  this->parentSensor->SetActive(true);
+    if (!this->parentSensor)
+    {
+        gzerr << "MultiCameraPlugin not attached to a camera sensor\n";
+        return;
+    }
+
+    for (size_t i = 0;
+         i < static_cast<size_t>(this->parentSensor->CameraCount()); ++i)
+    {
+        this->camera.push_back(this->parentSensor->Camera(i));
+
+        // save camera attributes
+        this->width.push_back(this->camera[i]->ImageWidth());
+        this->height.push_back(this->camera[i]->ImageHeight());
+        this->depth.push_back(this->camera[i]->ImageDepth());
+        this->format.push_back(this->camera[i]->ImageFormat());
+
+        std::string cameraName = this->parentSensor->Camera(i)->Name();
+        // gzdbg << "camera(" << i << ") name [" << cameraName << "]\n";
+
+        this->newFrameConnection.push_back(this->camera[i]->ConnectNewImageFrame(
+                boost::bind(&MultiCameraPlugin::OnNewFrame,
+                            this, _1, i, _2, _3, _4, _5)));
+    }
+
+    this->parentSensor->SetActive(true);
 }
 
 /////////////////////////////////////////////////
-void MultiCameraPlugin::OnNewFrameLeft(const unsigned char * /*_image*/,
-                              unsigned int /*_width*/,
-                              unsigned int /*_height*/,
-                              unsigned int /*_depth*/,
-                              const std::string &/*_format*/)
+void MultiCameraPlugin::OnNewFrame(const unsigned char * /*_image*/,
+                                   const size_t /*_camNumber*/,
+                                   unsigned int /*_width*/,
+                                   unsigned int /*_height*/,
+                                   unsigned int /*_depth*/,
+                                   const std::string &/*_format*/)
 {
-  /*rendering::Camera::SaveFrame(_image, this->width,
-    this->height, this->depth, this->format,
-    "/tmp/camera/me.jpg");
-    */
-}
-
-/////////////////////////////////////////////////
-void MultiCameraPlugin::OnNewFrameRight(const unsigned char * /*_image*/,
-                              unsigned int /*_width*/,
-                              unsigned int /*_height*/,
-                              unsigned int /*_depth*/,
-                              const std::string &/*_format*/)
-{
-  /*rendering::Camera::SaveFrame(_image, this->width,
-    this->height, this->depth, this->format,
-    "/tmp/camera/me.jpg");
-    */
+    //TODO: посмотреть, номрально ли приходят картинки.
+    /*rendering::Camera::SaveFrame(_image, this->width,
+      this->height, this->depth, this->format,
+      "/tmp/camera/me.jpg");
+      */
 }

@@ -27,21 +27,18 @@
 
 namespace gazebo
 {
-  class MultiCameraPlugin : public SensorPlugin
-  {
+    class MultiCameraPlugin : public SensorPlugin
+    {
     public: MultiCameraPlugin();
 
-    /// \brief Destructor
+        /// \brief Destructor
     public: virtual ~MultiCameraPlugin();
 
     public: virtual void Load(sensors::SensorPtr _sensor, sdf::ElementPtr _sdf);
 
-    public: virtual void OnNewFrameLeft(const unsigned char *_image,
-                              unsigned int _width, unsigned int _height,
-                              unsigned int _depth, const std::string &_format);
-    public: virtual void OnNewFrameRight(const unsigned char *_image,
-                              unsigned int _width, unsigned int _height,
-                              unsigned int _depth, const std::string &_format);
+    public: virtual void OnNewFrame(const unsigned char *_image, size_t _camNumber,
+                                    unsigned int _width, unsigned int _height,
+                                    unsigned int _depth, const std::string &_format);
 
     protected: sensors::MultiCameraSensorPtr parentSensor;
 
@@ -51,6 +48,6 @@ namespace gazebo
     protected: std::vector<rendering::CameraPtr> camera;
 
     private: std::vector<event::ConnectionPtr> newFrameConnection;
-  };
+    };
 }
 #endif

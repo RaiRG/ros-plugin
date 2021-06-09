@@ -27,33 +27,30 @@
 
 namespace gazebo
 {
-  class GazeboRosTriggeredMultiCamera : public MultiCameraPlugin
-  {
-    /// \brief Constructor
-    /// \param parent The parent entity, must be a Model or a Sensor
+    class GazeboRosTriggeredMultiCamera : public MultiCameraPlugin
+    {
+        /// \brief Constructor
+        /// \param parent The parent entity, must be a Model or a Sensor
     public: GazeboRosTriggeredMultiCamera();
 
-    /// \brief Destructor
+        /// \brief Destructor
     public: ~GazeboRosTriggeredMultiCamera();
 
-    /// \brief Load the plugin
-    /// \param take in SDF root element
+        /// \brief Load the plugin
+        /// \param take in SDF root element
     public: void Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf);
 
     std::vector<GazeboRosTriggeredCamera *> triggered_cameras;
 
-    /// \brief Update the controller
-    /// FIXME: switch to function vectors
-    protected: virtual void OnNewFrameLeft(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
-    protected: virtual void OnNewFrameRight(const unsigned char *_image,
-                   unsigned int _width, unsigned int _height,
-                   unsigned int _depth, const std::string &_format);
+        /// \brief Update the controller
+    protected: virtual void OnNewFrame(const unsigned char *_image,
+                                       size_t _camNumber,
+                                       unsigned int _width, unsigned int _height,
+                                       unsigned int _depth, const std::string &_format);
 
-    /// Bookkeeping flags that will be passed into the underlying
-    /// GazeboRosCameraUtils objects to let them share state about the parent
-    /// sensor.
+        /// Bookkeeping flags that will be passed into the underlying
+        /// GazeboRosCameraUtils objects to let them share state about the parent
+        /// sensor.
     private: boost::shared_ptr<int> image_connect_count_;
     private: boost::shared_ptr<boost::mutex> image_connect_count_lock_;
     private: boost::shared_ptr<bool> was_active_;
@@ -61,7 +58,8 @@ namespace gazebo
     protected: event::ConnectionPtr preRenderConnection_;
     protected: void SetCameraEnabled(const bool _enabled);
     protected: void PreRender();
-  };
+    };
 }
+
 #endif
 
